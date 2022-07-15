@@ -1,0 +1,516 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align="center")
+```
+
+```{r, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(epiDisplay)
+db = read.csv("data_HL_children_21-Jan-22.csv")
+```
+
+<!-- Início Capa -->
+
+<h1 align="center">**Projeto LabEst: Consultoria em Análise Estatística para Alunos de Pós-Graduação**</h1>
+<br />
+<br />
+
+<h3 align="center">**Relatório Preliminar da Análise Estatística:**</h3>
+<h3 align="center">Literacia Familiar no período pré e pandêmico de Covid-19: cenário brasileiro e estratégias de intervenção</h3>
+<br />
+<br />
+
+<h5 align="center">**Cliente**:</h5>
+<br />
+
+<h5 align="center">Natália Viana</h5>
+<h5 align="center">Doutoranda em Psicologia: Cognição e Comportamento - Faculdade de Filosofia e Ciências Humanas da Universidade Federal de Minas Gerais</h5>
+<br />
+<br />
+
+<h5 align="center">**Consultores**</h5>
+<br />
+
+<h5 align="center">Bianca Caravelli de Sá</h5>
+<h5 align="center">Luiz Felipe Avelar</h5>
+<h5 align="center">Thomás de Santiago Silva</h5>
+<h5 align="center">Alunos da Disciplina “Laboratório de Estatística I”</h5>
+<br />
+
+<h5 align="center">**Orientação: Prof. Adrian Luna**</h5>
+<br />
+
+<h5 align="center">**15/07/2022**</h5>
+<br />
+
+<!-- Fim Capa -->
+
+<!-- INÍCIO Introdução e metodologia -->
+
+<br />
+
+## 1) **Introdução e metodologia**
+
+<br />
+
+<font size="4"> 
+
+<p style='text-align: justify;'> 
+O objetivo dessa tese de doutorado é investigar o impacto da pandemia de COVID-19 nas práticas e recursos de literacia familiar no contexto brasileiro, ou seja, investigar as práticas de leitura e letramento feitas por pais e responsáveis com crianças pequenas feitas em casa durante o período de quarentena e o impacto para o desenvolvimento da alfabetização dessas crianças em um momento em que as escolas encontravam-se fechadas.
+
+Para a obtenção dos dados, foi aplicado o questionário "Examinando a influência das restrições da COVID-19 no ambiente de literacia familiar" que consiste em perguntas de interesse que descrevem o perfil demográfico e socioeconômico dessas famílias, assim como os hábitos e atividades de literacia desenvolvidas no ambiente familiar.
+
+A partir desses dados obtidos no questionário, as análises do dados encontram-se divididas em duas partes, a primeira consiste em uma análise descritiva, através de gráficos de barra, histogramas, boxplots e tabelas de frequência, das váriaveis de interesse principal que podem impactar os hábitos de literacia durante a pandemia. Cada variável foi analisada de maneira individual, sendo elas:
+</p>
+  
+  - Região de residência
+  
+  - Raça
+  
+  - Nível educacional do respondente
+  
+  - Nível Socioeconômico da família - renda familiar
+  
+  - Situação profissional do respondente antes e depois da covid
+  
+  - Quantidade de cuidadores
+  
+  - Quantidade de crianças
+  
+  - Tipo de quarentena
+  
+  - Nível de estresse com o isolamento
+  
+<p style='text-align: justify;'> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Já a segunda parte consiste em análises fatorial exploratórias a partir de blocos de perguntas a fim de reduzir a quantidade de variávies e obter indíces que explicam a variabilidade dos dados. As variáveis de interesse para essa análise foram divididas nos seguintes blocos:
+</p>
+  
+  - Bloco 1 - Bloco Reading History Br (Histórico de algabetização)
+  
+  - Bloco 2 - Home Literacy Resources Br (Recursos)
+  
+  - Bloco 3 - Enrichment Activities Br (Atividades de enriquecimento)
+
+</font>  
+<!-- FIM Introdução e metodologia -->
+
+<!-- INÍCIO Resultados -->
+
+<br />
+---
+
+## 2) **Resultados**
+
+<br />
+<br />
+<br />
+<br />
+
+---
+
+## 3) **Análise Exploratória**
+
+### **Região de residência**
+
+```{r, include=FALSE}
+sum(is.na(db$geographic_region_br))
+```
+
+<font size="4"> 
+<p style='text-align: justify;'> 
+Pode-se observar que a grande maioria, 73,45%, das pessoas que respoderam ao questionário moram na região Sudeste do Brasil, enquanto que apenas 2,55% são residentes da região Centro-Oeste. Esta variável possui 931 observações NAs.
+</p>
+</font>
+<br />
+
+```{r, fig.cap = "Figura 1 - Região de residência"}
+plotdata <- db %>%
+   filter(!is.na(geographic_region_br)) %>%
+  count(geographic_region_br) %>%
+  mutate(pct = n / sum(n),
+         pctlabel = paste0(round(pct * 100, 2), "%"),
+         geographic_region_br = recode(geographic_region_br, 
+                                          `0` = "Sul", 
+                                          `1` = "Sudeste", 
+                                          `2` = "Centro-Oeste", 
+                                          `3` = "Nordeste", 
+                                          `4` = "Norte"
+                                          ))
+
+ggplot(plotdata, 
+       aes(x = reorder(geographic_region_br, -pct),
+           y = pct)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  scale_y_continuous(limits = c(0,0.8)) +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Região", 
+       y = "Porcentagem")+
+  ggtitle("Região de residência") +
+  theme(plot.title = element_text(size=10, hjust = 0.5))
+```
+
+## **Raça**
+
+<font size="4"> 
+<p style='text-align: justify;'> 
+Pode-se observar que 87,92% das crianças são brancas ou pardas, sendo a raça branca a mais frequente. Para esta variável houve 931 obervações NAs.
+</p
+</font>
+<br />
+
+```{r, fig.cap = "Figura 2 - Raça"}
+plotdata <- db %>%
+   filter(!is.na(races_categorized)) %>%
+  count(races_categorized) %>%
+  mutate(pct = n / sum(n),
+         pctlabel = paste0(round(pct * 100, 2), "%"),
+         races_categorized = recode(races_categorized, 
+                                          `0` = "Branco(a)", 
+                                          `1` = "Pardo(a)", 
+                                          `2` = "Preto(a)", 
+                                          `3` = "Amarelo(a)", 
+                                          `4` = "Indígena",
+                                          `5` = "Outro(a)",
+                                          `6` = "N/S",
+                                          `7` = "Duas ou mais",
+                                          ))
+
+ggplot(plotdata, 
+       aes(x = reorder(races_categorized, -pct),
+           y = pct)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  scale_y_continuous(limits = c(0,0.8)) +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Raças", 
+       y = "Porcentagem")+
+  ggtitle("Raças") +
+  theme(plot.title = element_text(size=10, hjust = 0.5))
+```
+
+
+## **Nível educacional do respondente**
+
+```{r, include=FALSE}
+sum(is.na(db$highest_degree_ALL_br_y))
+```
+
+<font size="4"> 
+<p style='text-align: justify;'> 
+Pode-se observar que a maioria dos respondentes do questionário possuem um nível educacional alto, sendo que 51,55% possuem pós-graduação, enquanto que apenas 1,01% dos respondentes possuiem Ensino Fundamental completo ou incompleto.
+
+Vale ressaltar que 931 pessoas não responderam a essa pergunta.
+</p>
+</font>
+<br />
+
+```{r, fig.cap = "Figura 3 - Nível educacional do respondente"}
+plotdata <- db %>%
+   filter(!is.na(highest_degree_ALL_br_y)) %>%
+  count(highest_degree_ALL_br_y) %>%
+  mutate(pct = n / sum(n),
+         pctlabel = paste0(round(pct * 100, 2), "%"),
+         highest_degree_ALL_br_y = recode(highest_degree_ALL_br_y, 
+                                          `0` = "EF", 
+                                          `1` = "EM - Inc", 
+                                          `2` = "EM - Comp", 
+                                          `3` = "ES - Inc", 
+                                          `4` = "ES - Técnologo",
+                                          `5` = "ES - Comp",
+                                          `6` = "Pós-grad",
+                                          `7` = "N/S",
+                                          `8` = "Não aplicável"
+                                          ))
+
+ggplot(plotdata, 
+       aes(x = reorder(highest_degree_ALL_br_y, -pct),
+           y = pct)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  scale_y_continuous(limits = c(0,0.6)) +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Nível educacional", 
+       y = "Porcentagem")+
+  ggtitle("Nível educacional do respondente") +
+  theme(plot.title = element_text(size=10, hjust = 0.5))
+```
+
+
+## **Nível Socioeconômico da família - Renda familiar**
+
+<br />
+<font size="4"> 
+<p style='text-align: justify;'> 
+Em relação a renda familiar, pode-se observar que possui uma distribuição com consideráveis valores outliers, os gráficos abaixo possuem duas versões, sendo a primeira os valores originais e a segunda removendo os outliers. A renda mediana familiar é de R$ 7000,00 e 978 pessoas não responderam a essa questão.
+</p>
+</font>
+<br />
+
+```{r, include=FALSE}
+options(scipen=10000)
+# median(db_without_na_income$household_income_br)
+sum(is.na(db$household_income_br))
+```
+
+
+```{r, fig.cap = "Figura 4 - Renda familiar"}
+db_without_na_income <- db %>% drop_na(household_income_br)
+
+Q1 <- quantile(db_without_na_income$household_income_br, .25)
+Q3 <- quantile(db_without_na_income$household_income_br, .75)
+IQR <- IQR(db_without_na_income$household_income_br)
+
+db_witout_income_outliers <- subset(db_without_na_income, db_without_na_income$household_income_br > (Q1 - 1.5 * IQR) & db_without_na_income$household_income_br < (Q3 + 1.5*IQR))
+
+par(mfrow=c(1, 2))
+boxplot(
+  db_without_na_income$household_income_br,
+  ylab = "Renda (em reais)", 
+  main = "Renda familiar",
+  col = "indianred3"
+)
+boxplot(
+  db_witout_income_outliers$household_income_br,
+  ylab = "Renda (em reais)", 
+  main = "Renda familiar",
+  col = "indianred3"
+)
+```
+
+```{r, fig.cap = "Figura 5 - Renda familiar"}
+par(mfrow=c(1, 2))
+
+hist(db$household_income_br,
+  main = "Renda Familiar",
+  xlab = "Renda (em reais)",
+  ylab = "Número de residências",
+  col = "indianred3",
+  freq=TRUE
+)
+hist(db_witout_income_outliers$household_income_br,
+  main = "Renda Familiar",
+  xlab = "Renda (em reais)",
+  ylab = "Número de residências",
+  col = "indianred3",
+  freq=TRUE
+)
+```
+
+## **Situação profissional do respondente antes e depois da covid**
+
+```{r, include=FALSE}
+sum(is.na(db$bg_restrictions_br___0))
+```
+
+<br />
+<font size="4"> 
+<p style='text-align: justify;'> 
+Para as duas questões sobre situação profissional, há 12 opções de resposta, sendo elas:
+</p>
+
+0 - Eu trabalhava em tempo integral fora de casa (mais do que 40 horas por semana)
+
+1 - Eu trabalhava em tempo integral em casa (mais do que 40 horas por semana)
+
+2 - Eu trabalhava em tempo integral, parcialmente em casa e parcialmente fora de casa (mais do que 40 horas por semana)
+
+3 - Eu trabalhava meio período fora de casa (menos que 40 horas por semana) 
+
+4 - Eu trabalhava meio período em casa (menos que 40 horas por semana) 
+
+5 - Estudante 
+
+6 - Eu estava em licença de trabalho temporária (por exemplo suspenso do trabalho, licença maternidade)
+
+7 - Era dono(a) de casa ou cuidava das crianças em tempo integral
+
+8 - Desempregado
+
+9 - Aposentado 
+
+10 - Beneficiário do INSS 
+
+11 - Prefiro não responder
+
+<p style='text-align: justify;'> 
+Pode-se observar que a grande maioria dos respondentes possuia um emprego integral fora de casa anteriormente ao COVID-19, assim que a pandemia se inicia há uma mudança na distribuição dos tipos de emprego e o trabalho em casa passa a ser a categoria mais frequente.
+</p>
+</font>
+<br />
+
+```{r, fig.cap = "Figura 6 - Emprego pré pandemia"}
+job_before <- c(
+  rep("0", sum(db$bg_job_b4_br___0_y, na.rm = TRUE)),
+  rep("1", sum(db$bg_job_b4_br___1_y, na.rm = TRUE)),
+  rep("2", sum(db$bg_job_b4_br___2_y, na.rm = TRUE)),
+  rep("3", sum(db$bg_job_b4_br___3_y, na.rm = TRUE)),
+  rep("4", sum(db$bg_job_b4_br___4_y, na.rm = TRUE)),
+  rep("5", sum(db$bg_job_b4_br___5_y, na.rm = TRUE)),
+  rep("6", sum(db$bg_job_b4_br___6_y, na.rm = TRUE)),
+  rep("7", sum(db$bg_job_b4_br___7_y, na.rm = TRUE)),
+  rep("8", sum(db$bg_job_b4_br___8_y, na.rm = TRUE)),
+  rep("9", sum(db$bg_job_b4_br___9_y, na.rm = TRUE)),
+  rep("10", sum(db$bg_job_b4_br___10_y, na.rm = TRUE)),
+  rep("11", sum(db$bg_job_b4_br___11_y, na.rm = TRUE))
+)
+
+tab1(job_before, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Emprego antes da pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
+```
+
+```{r, fig.cap = "Figura 7 - Emprego na pandemia"}
+job_after <- c(
+  rep("0", sum(db$bg_job_since_br___0_y, na.rm = TRUE)),
+  rep("1", sum(db$bg_job_since_br___1_y, na.rm = TRUE)),
+  rep("2", sum(db$bg_job_since_br___2_y, na.rm = TRUE)),
+  rep("3", sum(db$bg_job_since_br___3_y, na.rm = TRUE)),
+  rep("4", sum(db$bg_job_since_br___4_y, na.rm = TRUE)),
+  rep("5", sum(db$bg_job_since_br___5_y, na.rm = TRUE)),
+  rep("6", sum(db$bg_job_since_br___6_y, na.rm = TRUE)),
+  rep("7", sum(db$bg_job_since_br___7_y, na.rm = TRUE)),
+  rep("8", sum(db$bg_job_since_br___8_y, na.rm = TRUE)),
+  rep("9", sum(db$bg_job_since_br___9_y, na.rm = TRUE)),
+  rep("10", sum(db$bg_job_since_br___10_y, na.rm = TRUE)),
+  rep("11", sum(db$bg_job_since_br___11_y, na.rm = TRUE))
+)
+
+tab1(job_after, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Emprego na pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
+```
+
+
+## **Quantidade de cuidadores**
+
+<font size="4"> 
+<p style='text-align: justify;'> 
+Pode-se observar que das 2223 respostas ao questionário, 2085 respostas foram de residências que possuem cuidadores.
+</p>
+</font>
+<br />
+
+```{r, include=FALSE}
+sum(is.na(db$bg_caregivers_b4_br))
+```
+
+
+```{r, fig.cap = "Figura 8 - Quantidade de cuidadores"}
+Quantidade_de_cuidadores <- db %>% dplyr::select(bg_caregivers_b4_br) %>% drop_na()
+tab1(Quantidade_de_cuidadores, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Quantidade de cuidadores por residência", xlab = "Número de cuidadores", ylab = "Número de residências")
+```
+
+## **Quantidade de crianças**
+
+<br />
+<font size="4"> 
+<p style='text-align: justify;'> 
+Pode-se observar que a maioria das residências possuem duas ou menos crianças, sendo que apenas 48 delas possuem quatro ou mais crianças. Para esta variável há 47 observações NAs.
+</p>
+</font>
+<br />
+
+```{r, include=FALSE}
+sum(is.na(db$bg_num_children_br))
+```
+
+
+```{r, fig.cap = "Figura 9 - Quantidade de crianças"}
+Quantidade_de_criancas <- db %>% dplyr::select(bg_num_children_br) %>% drop_na()
+tab1(Quantidade_de_criancas, decimal = 2, sort.group = "decreasing", cum.percent = TRUE, graph = TRUE, main = "Quantidade de crianças por residência", xlab = "Número de crianças", ylab = "Número de residências")
+```
+
+
+## **Tipo de quarentena**
+
+<font size="4"> 
+Para o tipo de quarentena e restrições recomendadas à família, temos as seguintes opções:
+
+0 - Não há restrições agora 
+
+1 - Quarentena voluntária 
+
+2 - Pedido ou aviso depermanência em casa pelo governo local (caminhadas ou passeios com distanciament osocial permitidos) 
+
+3 - Pedido de permanência em casa pelo governo local (só saia de casa para fins essenciais) 
+
+4 - Outro
+
+Pode-se observar que o tipo 3 foi o mais frequente, enquanto que o tipo 0 foi o menos frequente.
+
+</font>
+<br />
+
+```{r, include=FALSE}
+sum(is.na(db$bg_restrictions_br___0))
+```
+
+
+```{r, fig.cap = "Figura 10 - Restrições familiares na pandemia"}
+restrictions <- c(
+  rep("Tipo 0", sum(db$bg_restrictions_br___0, na.rm = TRUE)),
+  rep("Tipo 1", sum(db$bg_restrictions_br___1, na.rm = TRUE)),
+  rep("Tipo 2", sum(db$bg_restrictions_br___2, na.rm = TRUE)),
+  rep("Tipo 3", sum(db$bg_restrictions_br___3, na.rm = TRUE)),
+  rep("Tipo 4", sum(db$bg_restrictions_br___4, na.rm = TRUE))
+)
+
+tab1(restrictions, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Tipo de quarentena", xlab = "Tipo de quarentena", ylab = "Número de observações")
+```
+
+
+## **Nível de estresse com o isolamento**
+
+<br />
+<font size="4"> 
+
+Para o nível de estresse com o isolamento, tem-se as seguintes categorias:
+
+0 - Não tem - Não tem sido estressante
+
+1 - Pouco - Um pouco estressante
+
+2 - Estressante - Estressante
+
+3 - Muito - Muito estressante
+
+4 - Extremamente - Extremamente estressante
+
+<p style='text-align: justify;'> 
+Pode-se notar que apenas 175 das respostas consideram que o isolamento não tem sido estressante, enquanto 712 o consideram pouco estressante.
+</p>
+</font>
+<br />
+
+```{r, fig.cap = "Figura 11 - Nível de estresse com o isolamento"}
+stress <- c(
+  rep("Não tem", sum(db$bg_home_stress_br___0, na.rm = TRUE)),
+  rep("Pouco", sum(db$bg_home_stress_br___1, na.rm = TRUE)),
+  rep("Estressante", sum(db$bg_home_stress_br___2, na.rm = TRUE)),
+  rep("Muito", sum(db$bg_home_stress_br___3, na.rm = TRUE)),
+  rep("Extremamente", sum(db$bg_home_stress_br___4, na.rm = TRUE))
+)
+
+tab1(stress, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Nível de estresse com o isolamento", xlab = "Nível", ylab = "Número de observações")
+```
+
+## 4) **Análise Fatorial-- PCA e MCA**
+
+<font size="4"> 
+<p style='text-align: justify;'> 
+
+Ao trabalhar com um grande número de variáveis, a matriz de correlação agrupa uma grande quantidade de coeficientes (190 coeficientes para K = 20 variáveis). É, portanto, essencial ter uma ferramenta capaz de resumir as principais relações entre as variáveis de forma visual. 
+
+O objetivo do PCA é tirar conclusões das relações lineares entre variáveis detectando as dimensões principais de variabilidade. Como será analisado, estas conclusões serão complementadas pela definição das variáveis sintéticas oferecidas pelo PCA. Portanto, será mais fácil descrever os dados usando algumas variáveis sintéticas em vez de todas as variáveis originais.
+
+
+
+</p>
+</font>

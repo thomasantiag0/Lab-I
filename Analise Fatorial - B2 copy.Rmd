@@ -18,7 +18,7 @@ library(psych)
 library(FactoMineR)
 library(factoextra)
 
-db = read.csv("./data_HL_children_21-Jan-22.csv")
+db = read.csv("../data_HL_children_21-Jan-22.csv")
 db <- data.frame(db)
 ```
 
@@ -110,7 +110,7 @@ print(matcor, digits = 2)
 ```
 
 ```{r}
-corrplot(matcor, method="circle")
+corrplot(matcor, method="circle", type = "upper")
 ```
 
 ```{r}
@@ -119,7 +119,7 @@ print(matcor_pre, digits = 2)
 ```
 
 ```{r}
-corrplot(matcor_pre, method="circle")
+corrplot(matcor_pre, method="circle", type = "upper")
 ```
 
 
