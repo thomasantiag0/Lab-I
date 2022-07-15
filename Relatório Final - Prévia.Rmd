@@ -6,11 +6,50 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align="center")
 ```
 
-```{r, include=FALSE}
+```{r, echo=FALSE, include=FALSE}
 library(ggplot2)
 library(tidyverse)
 library(epiDisplay)
-db = read.csv("data_HL_children_21-Jan-22.csv")
+
+db = read.csv("../data_HL_children_21-Jan-22.csv")
+db <- data.frame(db)
+
+db_blocos <- db %>% 
+  dplyr::select("rh_age_read_br", "rh_read_b4_yng_br", "rh_read_since_yng_br", "rh_read_b4_old_br", 
+    "rh_read_with_b4_old_br", "rh_readin_b4_old_br", "rh_read_since_old_br", 
+    "rh_read_w_since_old_br", "rh_readin_since_old_br", "rh_read_time_b4_br",
+    "rh_read_time_since_br",
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected",
+    "ea_read_b4_ALL_br",
+    "ea_indr_b4_ALL_br",
+    "ea_letter_b4_yng_br",
+    "ea_tv_b4_yng_br",
+    "ea_boardg_b4_yng_br",
+    "ea_vidg_b4_yng_br",
+    "ea_edapp_b4_yng_br",
+    "ea_read_since_yng_br",
+    "ea_indr_since_yng_br",
+    "ea_letter_since_yng_br",
+    "ea_tv_since_yng_br",
+    "ea_boardg_since_yng_br",
+    "ea_vidg_since_yng_br",
+    "ea_edapp_since_yng_br")
+
+db_out_na <- db_blocos[rowSums(is.na(db_blocos)) < 1, ]
+
 ```
 
 <!-- Início Capa -->
@@ -89,7 +128,7 @@ A partir desses dados obtidos no questionário, as análises do dados encontram-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Já a segunda parte consiste em análises fatorial exploratórias a partir de blocos de perguntas a fim de reduzir a quantidade de variávies e obter indíces que explicam a variabilidade dos dados. As variáveis de interesse para essa análise foram divididas nos seguintes blocos:
 </p>
   
-  - Bloco 1 - Bloco Reading History Br (Histórico de algabetização)
+  - Bloco 1 - Bloco Reading History Br (Histórico de alfabetização)
   
   - Bloco 2 - Home Literacy Resources Br (Recursos)
   
@@ -156,7 +195,7 @@ ggplot(plotdata,
   theme(plot.title = element_text(size=10, hjust = 0.5))
 ```
 
-## **Raça**
+### **Raça**
 
 <font size="4"> 
 <p style='text-align: justify;'> 
@@ -198,7 +237,7 @@ ggplot(plotdata,
 ```
 
 
-## **Nível educacional do respondente**
+### **Nível educacional do respondente**
 
 ```{r, include=FALSE}
 sum(is.na(db$highest_degree_ALL_br_y))
@@ -247,7 +286,7 @@ ggplot(plotdata,
 ```
 
 
-## **Nível Socioeconômico da família - Renda familiar**
+### **Nível Socioeconômico da família - Renda familiar**
 
 <br />
 <font size="4"> 
@@ -307,7 +346,7 @@ hist(db_witout_income_outliers$household_income_br,
 )
 ```
 
-## **Situação profissional do respondente antes e depois da covid**
+### **Situação profissional do respondente antes e depois da covid**
 
 ```{r, include=FALSE}
 sum(is.na(db$bg_restrictions_br___0))
@@ -388,7 +427,7 @@ tab1(job_after, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Emprego n
 ```
 
 
-## **Quantidade de cuidadores**
+### **Quantidade de cuidadores**
 
 <font size="4"> 
 <p style='text-align: justify;'> 
@@ -407,7 +446,7 @@ Quantidade_de_cuidadores <- db %>% dplyr::select(bg_caregivers_b4_br) %>% drop_n
 tab1(Quantidade_de_cuidadores, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Quantidade de cuidadores por residência", xlab = "Número de cuidadores", ylab = "Número de residências")
 ```
 
-## **Quantidade de crianças**
+### **Quantidade de crianças**
 
 <br />
 <font size="4"> 
@@ -428,7 +467,7 @@ tab1(Quantidade_de_criancas, decimal = 2, sort.group = "decreasing", cum.percent
 ```
 
 
-## **Tipo de quarentena**
+### **Tipo de quarentena**
 
 <font size="4"> 
 Para o tipo de quarentena e restrições recomendadas à família, temos as seguintes opções:
@@ -466,7 +505,7 @@ tab1(restrictions, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Tipo d
 ```
 
 
-## **Nível de estresse com o isolamento**
+### **Nível de estresse com o isolamento**
 
 <br />
 <font size="4"> 
@@ -501,16 +540,230 @@ stress <- c(
 tab1(stress, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Nível de estresse com o isolamento", xlab = "Nível", ylab = "Número de observações")
 ```
 
-## 4) **Análise Fatorial-- PCA e MCA**
+<br />
+
+## 4) **Análise Fatorial - PCA e MCA**
+
+<br />
 
 <font size="4"> 
 <p style='text-align: justify;'> 
-
 Ao trabalhar com um grande número de variáveis, a matriz de correlação agrupa uma grande quantidade de coeficientes (190 coeficientes para K = 20 variáveis). É, portanto, essencial ter uma ferramenta capaz de resumir as principais relações entre as variáveis de forma visual. 
 
-O objetivo do PCA é tirar conclusões das relações lineares entre variáveis detectando as dimensões principais de variabilidade. Como será analisado, estas conclusões serão complementadas pela definição das variáveis sintéticas oferecidas pelo PCA. Portanto, será mais fácil descrever os dados usando algumas variáveis sintéticas em vez de todas as variáveis originais.
+O objetivo do **PCA** é tirar conclusões das relações lineares entre variáveis detectando as dimensões principais de variabilidade. Como será analisado, estas conclusões serão complementadas pela definição das variáveis sintéticas oferecidas pelo PCA. Portanto, será mais fácil descrever os dados usando algumas variáveis sintéticas em vez de todas as variáveis originais.
 
-
-
+Assim como na análise de componentes principais (PCA), o objetivo é resumir as relações entre as variáveis. Essas relações são estudadas em pares ou todas juntas. Neste último caso, procuramos variáveis sintéticas que resumem as informações contidas em um número de variáveis. A informação transportada por uma variável pode ser estudada em termosde suas categorias. Na **MCA**, focamos principalmente no estudo das categorias, como categorias representam tanto variáveis quanto um grupo de indivíduos (todos os
+indivíduos que selecionam esta categoria).
 </p>
 </font>
+
+<br />
+
+### **Bloco 1 - Histórico de alfabetização**
+
+<br />
+
+| Pré Covid | Com Covid |
+| --------- | --------- | 
+| rh_read_b4_yng_br | rh_read_since_yng_br  |
+| rh_read_b4_old_br | rh_read_since_old_br  |
+| rh_read_with_b4_old_br | rh_read_w_since_old_br |
+| rh_readin_b4_old_br | rh_readin_since_old_br |
+| rh_read_time_b4_br | rh_read_time_since_br |
+
+<br />
+
+```{r, echo=FALSE, include=FALSE}
+require(FactoMineR)
+require(stringr)
+require(dplyr)
+library(tidyverse)
+library(data.table)
+library(dplyr)
+library(car)
+require(corrplot)
+library(psych)
+library(FactoMineR)
+require(FactoInvestigate)
+library(factoextra)
+
+db_bloco_1 <- db_out_na %>% 
+  dplyr::select(
+    "rh_age_read_br",
+    "rh_read_b4_yng_br", 
+    "rh_read_since_yng_br",
+    "rh_read_b4_old_br",
+    "rh_read_with_b4_old_br",
+    "rh_readin_b4_old_br",
+    "rh_read_since_old_br", 
+    "rh_read_w_since_old_br",
+    "rh_readin_since_old_br", 
+    "rh_read_time_b4_br",
+    "rh_read_time_since_br"
+  )
+
+db_bloco_1_pre <- db_bloco_1 %>% 
+  dplyr::select(
+    "rh_read_b4_yng_br",
+    "rh_read_b4_old_br",
+    "rh_read_with_b4_old_br",
+    "rh_readin_b4_old_br",
+    "rh_read_time_b4_br"
+  )
+
+db_bloco_1_pos <- db_bloco_1 %>% 
+  dplyr::select(
+    "rh_read_since_yng_br",
+    "rh_read_since_old_br",
+    "rh_read_w_since_old_br",
+    "rh_readin_since_old_br",
+    "rh_read_time_since_br"
+  )
+
+```
+
+> Correlação entre as variáveis do bloco:
+
+<br />
+
+#### Bloco Inteiro
+
+```{r}
+matcor <- cor(db_bloco_1)
+corrplot(matcor, method="circle", type = "upper")
+```
+
+<br />
+
+#### Bloco Pré Pandemia
+
+```{r}
+matcor <- cor(db_bloco_1_pre)
+corrplot(matcor, method="circle", type = "upper")
+```
+
+<br />
+
+#### Bloco Pós Pandemia
+
+```{r}
+matcor <- cor(db_bloco_1_pos)
+corrplot(matcor, method="circle", type = "upper")
+```
+
+<br />
+
+### **Multiple Correspondence Analysis**
+
+O MCA geralmente é usado para analisar um conjunto de dados de uma pesquisa. O objetivo é identificar:
+
+1 - Um grupo de indivíduos com perfil semelhante em suas respostas às perguntas
+
+2 - As associações entre categorias de variáveis
+
+<p style='text-align: justify;'> 
+Calcular e visualizar a análise de correspondência múltipla no software R usando *FactoMineR* (para a análise) e *factoextra* (para visualização de dados).
+
+Revelar as variáveis mais importantes que mais contribuem para explicar as variações no conjunto de dados explicando como prever os resultados para indivíduos e variáveis suplementares. Filtrar os resultados do MCA para manter apenas as variáveis que mais contribuíram.
+</p>
+
+<br />
+
+### **Multiple Correspondence Analysis**
+
+```{r, echo=FALSE, include=FALSE}
+db_bloco_1_pref <- as.data.frame(lapply(db_bloco_1_pre, as.factor))
+```
+
+```{r}
+summary(db_bloco_1_pref)
+```
+
+```{r}
+par(mfrow=c(2, 3))
+plot(db_bloco_1_pref[,1], 
+     main=colnames(db_bloco_1_pref)[1],
+     ylab = "Count",
+     col="steelblue",
+     las = 2)
+plot(db_bloco_1_pref[,2], 
+                  main=colnames(db_bloco_1_pref)[2],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_pref[,3], 
+                  main=colnames(db_bloco_1_pref)[3],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_pref[,4], 
+                  main=colnames(db_bloco_1_pref)[5],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_pref[,5], 
+                  main=colnames(db_bloco_1_pref)[5],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+  
+```
+
+> Construindo o MCA
+
+As variáveis podem ser representadas calculando as razões de correlação entre as coordenadas dos indivíduos em um componente e cada uma das categorias.
+
+
+```{r}
+res.mca_1 <- MCA(db_bloco_1_pref, ncp = 5, graph = TRUE)
+```
+
+> Visualização e interpretação
+
+Estudar a inércia dos componentes principais permite-nos, por um lado, ver se as variáveis estão estruturadas (presença de correlações entre
+variáveis) e, além disso, determinar o número de componentes a serem interpretados. 
+
+Os resultados em abaixo, produzidos em um gráfico de barras, correspondem ao autovalor (ou seja, a inércia ou a variação explicada) associada a cada um dos componentes; a porcentagem de inércia associada a cada componente e a soma cumulativa dessas porcentagens.
+
+
+> Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_1, addlabels = TRUE, ylim = c(0, 45))
+
+```
+
+```{r}
+var_pref <- get_mca_var(res.mca_1)
+```
+
+
+```{r}
+fviz_mca_var(res.mca_1, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+head(round(var_pref$coord, 2), 4)
+```
+
+Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
+
+ > OS COSSENOS SAO MUITO BAIXOS!
+ 
+```{r}
+fviz_mca_var(res.mca_1, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, # Avoid text overlapping
+             ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_cos2(res.mca_1, choice = "var", axes = 1:2)
+```
+
+```{r}
+head(round(var_pref$contrib,2), 49)
+```
+

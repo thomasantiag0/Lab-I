@@ -1,0 +1,355 @@
+---
+title: 'Multiple Correspondence Analysis'
+author: 'Dataset db_bloco_1_pref'
+output:
+  html_document: default
+---
+This dataset contains 615 individuals and 36 variables.
+
+- - -
+
+```{r, echo = FALSE}
+library(FactoMineR)
+load('/Users/bi005279/Documents/uf7/lab-i/adrian/Lab-I/Workspace.RData')
+```
+### 1. Study of the outliers
+The analysis of the graphs leads to detect outliers that strongly influence the results. First we will describe these outliers and then we will suppress them from the analysis.
+Looking at the graph, we can note that 57 particular individuals strongly contribute to the construction of the plane. The cumulative contribution of these individuals to the construction of the plane equals **41.3%**.
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 3.5, fig.width = 5.5}
+drawn <-
+integer(0)
+par(mar = c(4.1, 4.1, 1.1, 2.1))
+plot.MCA(memory, choix = 'ind', invisible = c('var', 'quali'), select = drawn, title = '', cex = cex)
+```
+
+**Figure 1.1 - Individuals factor map (MCA) before correction.** 
+*Highlighting of 57 outliers.* 
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 3.5, fig.width = 5.5}
+drawn <-
+integer(0)
+par(mar = c(4.1, 4.1, 1.1, 2.1))
+plot.MCA(res, choix = 'ind', invisible = c('var', 'quali'), select = drawn, title = '', cex = cex)
+```
+
+**Figure 1.2 - Individuals factor map (MCA) after correction.** 
+*Highlighting of 57 outliers.* 
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 3.5, fig.width = 5.5}
+drawn <-
+c("rh_read_b4_yng_br_4", "rh_read_b4_old_br_4", "rh_read_with_b4_old_br_4", 
+"rh_read_b4_old_br_1", "rh_read_b4_yng_br_1", "rh_read_b4_old_br_2", 
+"rh_read_with_b4_old_br_1", "rh_read_with_b4_old_br_2", "rh_read_b4_yng_br_2"
+)
+par(mar = c(4.1, 4.1, 1.1, 2.1))
+plot.MCA(memory, choix = 'ind', invisible = 'ind', selectMod = drawn, title = '', cex = cex)
+```
+
+**Figure 1.3 - Variables factor map (MCA) before correction**
+*The labeled variables are those the best shown on the plane.*
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 3.5, fig.width = 5.5}
+drawn <-
+c("rh_read_b4_yng_br_4", "rh_read_b4_old_br_4", "rh_read_with_b4_old_br_4", 
+"rh_read_b4_old_br_1", "rh_read_b4_yng_br_1", "rh_read_b4_old_br_2", 
+"rh_read_with_b4_old_br_1", "rh_read_with_b4_old_br_2", "rh_read_b4_yng_br_2"
+)
+par(mar = c(4.1, 4.1, 1.1, 2.1))
+plot.MCA(res, choix = 'ind', invisible = 'ind', selectMod = drawn, title = '', cex = cex)
+```
+
+**Figure 1.3 - Variables factor map (MCA) after correction**
+
+- - -
+
+**The individual 25** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 60** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 65** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 66** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 87** :
+
+- is characterized by the factor(s) :
+*rh_read_time_b4_br_7*, *rh_read_b4_yng_br_6*, *rh_read_with_b4_old_br_6*, *rh_read_b4_old_br_6*, *rh_readin_b4_old_br_6* (factors are sorted from the strongest).
+
+**The individual 149** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 184** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 198** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 199** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 206** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 207** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 232** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 272** :
+
+- is characterized by the factor(s) :
+*rh_read_time_b4_br_5*, *rh_read_with_b4_old_br_6*, *rh_read_b4_old_br_6*, *rh_readin_b4_old_br_6*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 300** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 301** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_5*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 342** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_5*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 386** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 428** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 437** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 459** :
+
+- is characterized by the factor(s) :
+*rh_read_time_b4_br_7*, *rh_read_b4_yng_br_6*, *rh_read_with_b4_old_br_6*, *rh_read_b4_old_br_6*, *rh_readin_b4_old_br_6* (factors are sorted from the strongest).
+
+**The individual 498** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 519** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 46** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4*, *rh_read_with_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 79** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_3*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 105** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 167** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_3*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 200** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_5*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_read_with_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 224** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 267** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_6*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 289** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 293** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 330** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_3*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 350** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 353** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_2* (factors are sorted from the strongest).
+
+**The individual 366** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 426** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 465** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_3*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 466** :
+
+- is characterized by the factor(s) :
+*rh_readin_b4_old_br_3*, *rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 480** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 528** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0* (factors are sorted from the strongest).
+
+**The individual 540** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_0*, *rh_read_time_b4_br_8*, *rh_read_b4_old_br_0*, *rh_readin_b4_old_br_2* (factors are sorted from the strongest).
+
+**The individual 20** :
+
+- is characterized by the factor(s) :
+*rh_read_b4_yng_br_6*, *rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_6*, *rh_read_b4_old_br_5* (factors are sorted from the strongest).
+
+**The individual 52** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5* (factors are sorted from the strongest).
+
+**The individual 194** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 210** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 263** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_3*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 276** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 296** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 325** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 332** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_6*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 333** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_6*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 368** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5*, *rh_readin_b4_old_br_4* (factors are sorted from the strongest).
+
+**The individual 399** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 503** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5*, *rh_readin_b4_old_br_1* (factors are sorted from the strongest).
+
+**The individual 538** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5* (factors are sorted from the strongest).
+
+**The individual 551** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_5* (factors are sorted from the strongest).
+
+**The individual 599** :
+
+- is characterized by the factor(s) :
+*rh_read_with_b4_old_br_5*, *rh_readin_b4_old_br_5*, *rh_read_b4_old_br_5*, *rh_read_b4_yng_br_3* (factors are sorted from the strongest).
+
+These outliers are suppressed from the analysis and a second one is performed on the rest of the individuals.
+
+- - -
+
+### 2. Inertia distribution
