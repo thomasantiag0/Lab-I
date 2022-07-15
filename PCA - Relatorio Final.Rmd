@@ -1,0 +1,239 @@
+---
+title: "PCA - Relatorio Final"
+author: "Boanca, Luiz e Thomás"
+date: "15/07/2022"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(epiDisplay)
+require(FactoMineR)
+require(stringr)
+require(dplyr)
+library(tidyverse)
+library(data.table)
+library(dplyr)
+library(car)
+require(corrplot)
+library(psych)
+library(FactoMineR)
+require(FactoInvestigate)
+library(factoextra)
+
+db = read.csv("../data_HL_children_21-Jan-22.csv")
+db <- data.frame(db)
+
+db_blocos <- db %>% 
+  dplyr::select("rh_age_read_br", "rh_read_b4_yng_br", "rh_read_since_yng_br", "rh_read_b4_old_br", 
+    "rh_read_with_b4_old_br", "rh_readin_b4_old_br", "rh_read_since_old_br", 
+    "rh_read_w_since_old_br", "rh_readin_since_old_br", "rh_read_time_b4_br",
+    "rh_read_time_since_br",
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected",
+    "ea_read_b4_ALL_br",
+    "ea_indr_b4_ALL_br",
+    "ea_letter_b4_yng_br",
+    "ea_tv_b4_yng_br",
+    "ea_boardg_b4_yng_br",
+    "ea_vidg_b4_yng_br",
+    "ea_edapp_b4_yng_br",
+    "ea_read_since_yng_br",
+    "ea_indr_since_yng_br",
+    "ea_letter_since_yng_br",
+    "ea_tv_since_yng_br",
+    "ea_boardg_since_yng_br",
+    "ea_vidg_since_yng_br",
+    "ea_edapp_since_yng_br")
+
+db_out_na <- db_blocos[rowSums(is.na(db_blocos)) < 1, ]
+
+db_bloco_1 <- db_out_na %>% 
+  dplyr::select(
+    "rh_age_read_br",
+    "rh_read_b4_yng_br", 
+    "rh_read_since_yng_br",
+    "rh_read_b4_old_br",
+    "rh_read_with_b4_old_br",
+    "rh_readin_b4_old_br",
+    "rh_read_since_old_br", 
+    "rh_read_w_since_old_br",
+    "rh_readin_since_old_br", 
+    "rh_read_time_b4_br",
+    "rh_read_time_since_br"
+  )
+
+db_bloco_1_pre <- db_bloco_1 %>% 
+  dplyr::select(
+    "rh_read_b4_yng_br",
+    "rh_read_b4_old_br",
+    "rh_read_with_b4_old_br",
+    "rh_readin_b4_old_br",
+    "rh_read_time_b4_br"
+  )
+
+db_bloco_1_pos <- db_bloco_1 %>% 
+  dplyr::select(
+    "rh_read_since_yng_br",
+    "rh_read_since_old_br",
+    "rh_read_w_since_old_br",
+    "rh_readin_since_old_br",
+    "rh_read_time_since_br"
+  )
+
+db_bloco_2 <- db_out_na %>% 
+  dplyr::select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+
+db_bloco_2_pre <- db_bloco_2 %>% 
+  dplyr::select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected"
+  )
+
+db_bloco_2_pos <- db_bloco_2 %>% 
+  dplyr::select(
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+colnames(db_bloco_2)<- c("books_b4", 
+    "dbooks_b4",
+    "games_b4",
+    "dgames_b4",
+    "ad_books_b4",
+     "ad_dbooks_b4",
+     "ad_news_b4",
+    "books_since", 
+    "dbooks_since",
+    "games_since",
+    "dgames_since",
+    "ad_books_since",
+     "ad_dbooks_since",
+     "ad_news_since")
+
+ colnames(db_bloco_2_pre) <- c("books_b4", 
+    "dbooks_b4",
+    "games_b4",
+    "dgames_b4",
+    "ad_books_b4",
+     "ad_dbooks_b4",
+     "ad_news_b4")
+ 
+  colnames(db_bloco_2_pos) <- c("books_since", 
+    "dbooks_since",
+    "games_since",
+    "dgames_since",
+    "ad_books_since",
+     "ad_dbooks_since",
+     "ad_news_since")
+
+```
+
+
+
+### **Principal Components Analysis**
+
+### **Bloco 1**
+
+#### **Pré Pandemia**
+
+```{r, echo=FALSE, include=FALSE}
+db_bloco_1_pren <- as.data.frame(lapply(db_bloco_1_pre, as.numeric))
+```
+
+```{r}
+summary(db_bloco_1_pren)
+```
+
+```{r}
+res.pca <- PCA(db_bloco_1_pren)
+res.pca$eig
+```
+
+```{r}
+FactoInvestigate::Investigate(res.pca)
+```
+
+
+#### **Pós Pandemia**
+
+```{r, echo=FALSE, include=FALSE}
+db_bloco_1_posn <- as.data.frame(lapply(db_bloco_1_pos, as.numeric))
+```
+
+```{r}
+summary(db_bloco_1_posn)
+```
+
+```{r}
+res.pca <- PCA(db_bloco_1_posn)
+res.pca$eig
+```
+
+```{r}
+FactoInvestigate::Investigate(res.pca)
+```
+
+
+### **Bloco 2**
+
+#### **Pré Pandemia**
+
+
+```{r}
+res.pca_2_pre <- PCA(db_bloco_2_pre)
+res.pca_2_pre$eig
+```
+
+```{r}
+FactoInvestigate::Investigate(res.pca_2_pos, )
+```
+
+#### **Pós Pandemia**
+
+
+```{r}
+res.pca_2_pos <- PCA(db_bloco_2_pos)
+res.pca_2_pos$eig
+```
+
+```{r}
+FactoInvestigate::Investigate(res.pca_2_pos)
+```

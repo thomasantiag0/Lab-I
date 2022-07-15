@@ -1,0 +1,695 @@
+---
+title: "Descritiva - Bloco 2"
+output: html_document
+date: '2022-07-06'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, include=FALSE}
+library(tidyverse)
+library(data.table)
+library(dplyr)
+library(car)
+require(corrplot)
+library(psych)
+library(FactoMineR)
+library(factoextra)
+
+db = read.csv("../data_HL_children_21-Jan-22.csv")
+db <- data.frame(db)
+```
+
+> Separating Data
+
+```{r}
+db_blocos <- db %>% 
+  select("rh_age_read_br", "rh_read_b4_yng_br", "rh_read_since_yng_br", "rh_read_b4_old_br", 
+    "rh_read_with_b4_old_br", "rh_readin_b4_old_br", "rh_read_since_old_br", 
+    "rh_read_w_since_old_br", "rh_readin_since_old_br", "rh_read_time_b4_br",
+    "rh_read_time_since_br",
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected",
+    "ea_read_b4_ALL_br",
+    "ea_indr_b4_ALL_br",
+    "ea_letter_b4_yng_br",
+    "ea_tv_b4_yng_br",
+    "ea_boardg_b4_yng_br",
+    "ea_vidg_b4_yng_br",
+    "ea_edapp_b4_yng_br",
+    "ea_read_since_yng_br",
+    "ea_indr_since_yng_br",
+    "ea_letter_since_yng_br",
+    "ea_tv_since_yng_br",
+    "ea_boardg_since_yng_br",
+    "ea_vidg_since_yng_br",
+    "ea_edapp_since_yng_br")
+
+db_out_na <- db_blocos[rowSums(is.na(db_blocos)) < 1, ]
+
+db_bloco_2 <- db_out_na %>% 
+  select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+
+db_bloco_2_pre <- db_bloco_2 %>% 
+  select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected"
+  )
+
+db_bloco_2_pos <- db_bloco_2 %>% 
+  select(
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+```
+
+## Analise Fatorial
+
+```{r}
+matcor <- cor(db_bloco_2)
+print(matcor, digits = 2)
+```
+
+```{r}
+corrplot(matcor, method="circle", type = "upper")
+```
+
+```{r}
+matcor_pre <- cor(db_bloco_2_pre)
+print(matcor_pre, digits = 2)
+```
+
+```{r}
+corrplot(matcor_pre, method="circle", type = "upper")
+```
+
+
+
+#############################################################################################
+## Multiple Correspondence Analysis
+
+
+
+O MCA geralmente é usado para analisar um conjunto de dados de uma pesquisa. O objetivo é identificar:
+
+1) Um grupo de indivíduos com perfil semelhante em suas respostas às perguntas
+2) As associações entre categorias de variáveis
+
+Calcular e visualizar a análise de correspondência múltipla no software R usando FactoMineR (para a análise) e 
+                                                                                factoextra (para visualização de dados)
+Revelar as variáveis mais importantes que mais contribuem para explicar as variações no conjunto de dados
+ explicando como prever os resultados para indivíduos e variáveis suplementares.
+ filtrar os resultados do MCA para manter apenas as variáveis que mais contribuíram.
+ 
+```{r}
+library("FactoMineR")
+library("factoextra")
+```
+ 
+## PRE-PANDEMIA
+
+```{r}
+db_bloco_2_pref <- as.data.frame(lapply(db_bloco_2_pre, as.factor))
+```
+
+```{r}
+summary(db_bloco_2_pref)
+```
+
+```{r}
+for (i in 1:7) {
+  plot(db_bloco_2_pref[,i], main=colnames(db_bloco_2_pref)[i],
+       ylab = "Count", col="steelblue", las = 2)
+  }
+```
+
+MCA com pacote FactoMineR
+
+```{r}
+MCA(db_bloco_2_pref,ncp = 5, graph = TRUE) 
+```
+
+```{r}
+res.mca_pref <- MCA(db_bloco_2_pref, graph = FALSE)
+print(res.mca_pref)
+```
+
+#Visualização e interpretação
+Autovalores/variâncias retidos por cada dimensão (eixo)
+
+```{r}
+eig.val_pref <- get_eigenvalue(res.mca_pref)
+eig.val_pref
+```
+
+Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_pref, addlabels = TRUE, ylim = c(0, 45))
+```
+Biplot de indivíduos e categorias de variáveis:
+
+```{r}
+fviz_mca_biplot(res.mca_pref, 
+               repel = TRUE, # Avoid text overlapping (slow if many point)
+               ggtheme = theme_minimal())
+```
+#Gráfico de variáveis
+#Resultados
+Usada para extrair os resultados para categorias de variáveis. Esta função retorna uma lista contendo as coordenadas, o cos2 e a contribuição das categorias de variáveis:
+
+```{r}
+var_pref <- get_mca_var(res.mca_pref)
+var_pref
+```
+
+```{r}
+# Coordinates
+var_pref$coord
+```
+
+
+```{r}
+var_pref$cos2
+
+```
+
+```{r}
+var_pref$contrib
+```
+
+#Correlação entre variáveis e dimensões principais
+correlação entre as variáveis e as dimensões principais do MCA
+
+
+```{r}
+fviz_mca_var(res.mca_pref, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+head(round(var_pref$coord, 2), 4)
+```
+
+para visualizar apenas categorias de variáveis:
+
+```{r}
+fviz_mca_var(res.mca_pref, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+```
+
+```{r}
+head(var_pref$cos2, 10)
+```
+
+Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
+
+!!! OS COSSENOS SAO MUITO BAIXOS!!
+```{r}
+fviz_mca_var(res.mca_pref, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, # Avoid text overlapping
+             ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_cos2(res.mca_pref, choice = "var", axes = 1:2)
+```
+
+```{r}
+head(round(var_pref$contrib,2), 49)
+```
+
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_pref, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_pref, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_contrib(res.mca_pref, choice = "var", axes = 1:2, top = 15)
+```
+
+```{r}
+fviz_mca_var(res.mca_pref, alpha.var="contrib",
+             repel = TRUE,
+             ggtheme = theme_minimal())
+```
+
+##Gráfico de indivíduos
+Resultados
+
+lista contendo as coordenadas, o cos2 e as contribuições dos indivíduos:
+
+```{r}
+ind_pref <- get_mca_ind(res.mca_pref)
+ind_pref
+```
+
+ colorir os indivíduos por seus valores de cos2:
+```{r}
+fviz_mca_ind(res.mca_pref, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE, # Avoid text overlapping (slow if many points)
+             ggtheme = theme_minimal())
+```
+
+```{r}
+# Cos2 of individuals
+fviz_cos2(res.mca_pref, choice = "ind", axes = 1:2, top = 20)
+# Contribution of individuals to the dimensions
+fviz_contrib(res.mca_pref, choice = "ind", axes = 1:2, top = 20)
+```
+
+
+## POS-PANDEMIA
+
+```{r}
+db_bloco_2_posf <- as.data.frame(lapply(db_bloco_2_pos, as.factor))
+```
+
+```{r}
+summary(db_bloco_2_posf)
+```
+
+```{r}
+for (i in 1:7) {
+  plot(db_bloco_2_posf[,i], main=colnames(db_bloco_2_posf)[i],
+       ylab = "Count", col="steelblue", las = 2)
+  }
+```
+
+```{r}
+MCA(db_bloco_2_posf,ncp = 5, graph = TRUE) 
+```
+
+```{r}
+res.mca_posf <- MCA(db_bloco_2_posf, graph = FALSE)
+print(res.mca_posf)
+```
+
+#Visualização e interpretação
+Autovalores/variâncias retidos por cada dimensão (eixo)
+```{r}
+eig.val_posf <- get_eigenvalue(res.mca_posf)
+eig.val_posf
+```
+
+Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_posf, addlabels = TRUE, ylim = c(0, 45))
+```
+Biplot de indivíduos e categorias de variáveis:
+
+```{r}
+fviz_mca_biplot(res.mca_posf, 
+               repel = TRUE, # Avoid text overlapping (slow if many point)
+               ggtheme = theme_minimal())
+```
+#Gráfico de variáveis
+#Resultados
+Usada para extrair os resultados para categorias de variáveis. Esta função retorna uma lista contendo as coordenadas, o cos2 e a contribuição das categorias de variáveis:
+
+```{r}
+var_posf <- get_mca_var(res.mca_posf)
+var_posf
+```
+
+```{r}
+# Coordinates
+var_posf$coord
+```
+
+
+```{r}
+var_posf$cos2
+
+```
+
+```{r}
+var_posf$contrib
+```
+
+#Correlação entre variáveis e dimensões principais
+correlação entre as variáveis e as dimensões principais do MCA
+
+
+
+```{r}
+fviz_mca_var(res.mca_posf, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+head(round(var_posf$coord, 2), 4)
+```
+
+para visualizar apenas categorias de variáveis:
+
+```{r}
+fviz_mca_var(res.mca_posf, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+```
+```{r}
+head(var_posf$cos2, 10)
+```
+
+Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
+
+!!! OS COSSENOS SAO MUITO BAIXOS!!
+```{r}
+fviz_mca_var(res.mca_posf, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, # Avoid text overlapping
+             ggtheme = theme_minimal())
+```
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_pref, choice = "var", axes = 1, top = 15)
+fviz_contrib(res.mca_posf, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_pref, choice = "var", axes = 2, top = 15)
+fviz_contrib(res.mca_posf, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_cos2(res.mca_posf, choice = "var", axes = 1:2)
+```
+
+```{r}
+head(round(var_posf$contrib,2), 49)
+```
+
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_posf, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_posf, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_contrib(res.mca_posf, choice = "var", axes = 1:2, top = 15)
+```
+
+```{r}
+fviz_mca_var(res.mca_posf, alpha.var="contrib",
+             repel = TRUE,
+             ggtheme = theme_minimal())
+```
+
+##Gráfico de indivíduos
+Resultados
+
+lista contendo as coordenadas, o cos2 e as contribuições dos indivíduos:
+
+```{r}
+ind_posf <- get_mca_ind(res.mca_posf)
+ind_posf
+```
+
+ colorir os indivíduos por seus valores de cos2:
+```{r}
+fviz_mca_ind(res.mca_posf, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE, # Avoid text overlapping (slow if many points)
+             ggtheme = theme_minimal())
+```
+
+```{r}
+# Cos2 of individuals
+fviz_cos2(res.mca_posf, choice = "ind", axes = 1:2, top = 20)
+# Contribution of individuals to the dimensions
+fviz_contrib(res.mca_posf, choice = "ind", axes = 1:2, top = 20)
+```
+
+
+
+## PANDEMIA COMPLETA
+
+```{r}
+db_bloco_2f <- as.data.frame(lapply(db_bloco_2, as.factor))
+```
+
+```{r}
+summary(db_bloco_2f)
+```
+
+```{r}
+for (i in 1:14) {
+  plot(db_bloco_2f[,i], main=colnames(db_bloco_2f)[i],
+       ylab = "Count", col="steelblue", las = 2)
+  }
+```
+
+```{r}
+MCA(db_bloco_2f,ncp = 5, graph = TRUE) 
+```
+
+```{r}
+res.mca_2f <- MCA(db_bloco_2f, graph = FALSE)
+print(res.mca_2f)
+```
+
+#Visualização e interpretação
+Autovalores/variâncias retidos por cada dimensão (eixo)
+```{r}
+eig.val_2f <- get_eigenvalue(res.mca_2f)
+eig.val_2f
+```
+
+Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_2f, addlabels = TRUE, ylim = c(0, 45))
+```
+Biplot de indivíduos e categorias de variáveis:
+
+```{r}
+fviz_mca_biplot(res.mca_2f, 
+               repel = TRUE, # Avoid text overlapping (slow if many point)
+               ggtheme = theme_minimal())
+```
+#Gráfico de variáveis
+#Resultados
+Usada para extrair os resultados para categorias de variáveis. Esta função retorna uma lista contendo as coordenadas, o cos2 e a contribuição das categorias de variáveis:
+
+```{r}
+var_2f <- get_mca_var(res.mca_2f)
+var_2f
+```
+
+```{r}
+# Coordinates
+var_2f$coord
+```
+
+
+```{r}
+var_2f$cos2
+
+```
+
+```{r}
+var_2f$contrib
+```
+
+#Correlação entre variáveis e dimensões principais
+correlação entre as variáveis e as dimensões principais do MCA
+
+
+
+```{r}
+fviz_mca_var(res.mca_2f, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+head(round(var_2f$coord, 2), 4)
+```
+
+para visualizar apenas categorias de variáveis:
+
+```{r}
+fviz_mca_var(res.mca_2f, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+```
+```{r}
+head(var_2f$cos2, 10)
+```
+
+Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
+
+!!! OS COSSENOS SAO MUITO BAIXOS!!
+```{r}
+fviz_mca_var(res.mca_2f, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, # Avoid text overlapping
+             ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_cos2(res.mca_2f, choice = "var", axes = 1:2)
+```
+
+```{r}
+head(round(var_2f$contrib,2), 49)
+```
+
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_2f, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_2f, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_contrib(res.mca_2f, choice = "var", axes = 1:2, top = 15)
+```
+```{r}
+fviz_mca_var(res.mca_2f, alpha.var="contrib",
+             repel = TRUE,
+             ggtheme = theme_minimal())
+```
+
+##Gráfico de indivíduos
+Resultados
+
+lista contendo as coordenadas, o cos2 e as contribuições dos indivíduos:
+
+```{r}
+ind_2f <- get_mca_ind(res.mca_2f)
+ind_2f
+```
+
+ colorir os indivíduos por seus valores de cos2:
+```{r}
+fviz_mca_ind(res.mca_2f, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE, # Avoid text overlapping (slow if many points)
+             ggtheme = theme_minimal())
+```
+```{r}
+# Cos2 of individuals
+fviz_cos2(res.mca_2f, choice = "ind", axes = 1:2, top = 20)
+# Contribution of individuals to the dimensions
+fviz_contrib(res.mca_2f, choice = "ind", axes = 1:2, top = 20)
+```
+
+
+## PCA COMO NUMERICO
+
+## PRE-PANDEMIA
+
+Com o pacote "psych"
+Como o p-valor e praticamente 0, a matrix de correlacao nao e diagonal, ou seja, as variaveis seao correlacionadas. 
+
+```{r, message=FALSE}
+require(psych)
+
+cortest.bartlett(db_bloco_2_pre)
+```
+
+> The test measures sampling adequacy for each variable in the model and for the complete model. The statistic is a measure of the proportion of variance among variables that might be common variance. The lower the proportion, the more suited your data is to Factor Analysis.
+
+```{r}
+KMO(db_bloco_2_pre)
+```
+
+```{r}
+res.pca_2_pre <- PCA(db_bloco_2_pre)
+res.pca_2_pre$eig
+```
+
+```{r}
+PCA_2_pre <- prcomp(db_bloco_2_pre, scale = TRUE)
+print(PCA_2_pre)
+```
+
+```{r}
+summary(PCA_2_pre)
+```
+
+```{r}
+screeplot(PCA_2_pre, type = c("lines"), main = deparse(substitute(PCA)))
+```
+
+```{r}
+ biplot(princomp(db_bloco_2_pre, cor = T))
+```
+
+```{r}
+fviz_pca_ind(res.pca_2_pre,
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+```
+
+```{r}
+fviz_pca_var(res.pca_2_pre,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+```
+
+```{r}
+fviz_pca_biplot(res.pca_2_pre, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+                )
+```
+

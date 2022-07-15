@@ -858,3 +858,271 @@ fviz_contrib(res.mca_1, choice = "var", axes = 1, top = 15)
 # Contributions of rows to dimension 2
 fviz_contrib(res.mca_1, choice = "var", axes = 2, top = 15)
 ```
+
+### **Bloco 2 - Recursos de alfabetização inicial**
+
+```{r}
+db_bloco_2 <- db_out_na %>% 
+  dplyr::select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected",
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+
+db_bloco_2_pre <- db_bloco_2 %>% 
+  dplyr::select(
+    "hlr_books_b4_corrected", 
+    "hlr_dbooks_b4_corrected",
+    "hlr_games_b4_corrected",
+    "hlr_dgames_b4_corrected",
+    "hlr_ad_books_b4_corrected",
+    "hlr_ad_dbooks_b4_corrected",
+    "hlr_ad_news_b4_corrected"
+  )
+
+db_bloco_2_pos <- db_bloco_2 %>% 
+  dplyr::select(
+    "hlr_books_since_corrected",
+    "hlr_dbooks_since_corrected",
+    "hlr_games_since_corrected",
+    "hlr_dgames_since_corrected",
+    "hlr_ad_books_since_corrected",
+    "hlr_ad_dbooks_since_corrected",
+    "hlr_ad_news_since_corrected" 
+  )
+colnames(db_bloco_2)<- c("books_b4", 
+    "dbooks_b4",
+    "games_b4",
+    "dgames_b4",
+    "ad_books_b4",
+     "ad_dbooks_b4",
+     "ad_news_b4",
+    "books_since", 
+    "dbooks_since",
+    "games_since",
+    "dgames_since",
+    "ad_books_since",
+     "ad_dbooks_since",
+     "ad_news_since")
+
+ colnames(db_bloco_2_pre) <- c("books_b4", 
+    "dbooks_b4",
+    "games_b4",
+    "dgames_b4",
+    "ad_books_b4",
+     "ad_dbooks_b4",
+     "ad_news_b4")
+ 
+  colnames(db_bloco_2_pos) <- c("books_since", 
+    "dbooks_since",
+    "games_since",
+    "dgames_since",
+    "ad_books_since",
+     "ad_dbooks_since",
+     "ad_news_since")
+```
+
+
+> Mapa de calor para a correlação entre as variáveis do bloco 2
+
+Pode-se observar que as variáveis que apresentam maior correlação são justamente aquelas variáveis pré e pós pandemais, tal como**hlr_books_b4** e **hlr_books_since** que indicam a quantidade de Livros impressos para crianças, **hlr_ad_books_b4** e **hlr_ad_books_since**, que indicam a quantidade Livros impressos para adultos. Outra correlação é entre **hlr_ad_books_b4** e **hlr_books_since**.
+
+```{r}
+matcorr_2 <- cor(db_bloco_2)
+corrplot(matcorr_2, method="circle", type = 'upper')
+```
+
+
+> Mapa de calor para a correlação entre as variáveis do bloco 2 pré-pandemia
+
+```{r}
+matcorr_pre_2 <- cor(db_bloco_2_pre)
+corrplot(matcorr_pre_2, method="circle", type = "upper")
+```
+
+> Mapa de calor para a correlação entre as variáveis do bloco 2 pós-pandemia
+
+```{r}
+matcorr_pos_2 <- cor(db_bloco_2_pos)
+corrplot(matcorr_pos_2, method="circle")
+```
+
+#### Pré Pandemia
+
+```{r}
+db_bloco_2_pref <- as.data.frame(lapply(db_bloco_2_pre, as.factor))
+```
+
+Pelas frequências das categorias, a maioria dos recursos se concentram nas quantidades das categoria até 1. Apenas livros para crianças e adultos apresentam quantidades maiores.
+```{r}
+for (i in 1:7) {
+plot(db_bloco_2_pref[,i], main=colnames(db_bloco_2_pref)[i],
+       ylab = "Count", col="steelblue", las = 2)
+  }
+```
+
+```{r}
+levels(db_bloco_2_pref$ad_news_b4)[4] <- (db_bloco_2_pref$ad_news_b4)[3]
+```
+
+Há um grupo indivíduos (na extremidade positiva do segundo
+principal componente) muito próximos, pois compartilham muitas categorias em comuns.
+Assim como na extremidade negativa.
+
+Já a primeira principal componente parece explicar um grupo seleto de pessoas.
+
+Analisando pelas categorias, o primeiro grupo citado apresenta categorias de quantidade entre 2 e 6 na sua extremidade,
+no segundo as categorias as extremidades se concetram em zero.
+E o terceiro categorias em 7.
+Além disso parece haver um grupo naa1aaa2ão bem explicado em ambas.
+
+> Construindo MCA
+
+```{r, include=FALSE}
+res.mca_pref <- MCA(db_bloco_2_pref,ncp = 5, graph = TRUE ) 
+```
+
+```{r}
+fviz_mca_biplot(res.mca_pref, 
+               repel = TRUE, # Avoid text overlapping (slow if many point)
+               ggtheme = theme_minimal(),
+              xlim = c(-2,6),
+              ylim= c(-4,2))
+```
+A variável **hlr_ad_news_b4** é a menos correlacionada com ambas dimensões.
+As demais variáveis sao próximas nos dos primeiros componentes. 
+
+```{r}
+fviz_mca_var(res.mca_pref, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_mca_var(res.mca_pref, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal(),
+              xlim = c(-2,6),
+              ylim= c(-4,2))
+```
+
+As 5 primeiras dimensões juntas explicam cerca de 25% da variância dos dados.
+E as 2 primeiras 12%.
+Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_pref, addlabels = TRUE, ylim = c(0, 10))
+```
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_pref, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_pref, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_mca_var(res.mca_pref, alpha.var="contrib",
+             repel = TRUE,
+             ggtheme = theme_minimal())
+```
+
+
+#### Pós Pandemia
+
+```{r}
+db_bloco_2_posf <- as.data.frame(lapply(db_bloco_2_pos, as.factor))
+```
+
+<!-- Pelas frequências das categorias, a maioria dos recursos se mantiveram com a mesma quantidade pos-pandemia.  -->
+<!-- ```{r} -->
+
+<!-- for (i in 1:7) { -->
+<!-- plot(db_bloco_2_posf[,i], main=colnames(db_bloco_2_posf)[i], -->
+<!--        ylab = "Count", col="steelblue", las = 2) -->
+<!--   } -->
+<!-- ``` -->
+
+Há um grupo indivíduos (na extremidade positiva do segundo
+principal componente) muito próximos, pois compartilham muitas categorias em comuns.
+Assim como na extremidade negativa.
+
+Já a primeira principal componente parece explicar um grupo seleto de pessoas.
+
+Analisando pelas categorias, o primeiro grupo citado apossenta categorias de quantidade entre 2 e 3 na sua extremidade superior,
+no segundo as categorias as extremidades se concetram em zero.
+E o terceiro categorias em 7.
+Além disso parece haver um grupo naa1aaa2ão bem explicado em ambas.
+
+
+```{r, include=FALSE}
+res.mca_posf <- MCA(db_bloco_2_posf,ncp = 5, graph = TRUE ) 
+```
+
+```{r}
+fviz_mca_biplot(res.mca_posf, 
+               repel = TRUE, # Avoid text overlapping (slow if many point)
+               ggtheme = theme_minimal(),
+              xlim = c(-2,6),
+              ylim= c(-4,2))
+```
+A variável **hlr_ad_news_since** é a menos correlacionada com ambas dimensões.
+As demais variáveis sao próximas nos dos primeiros componentes. 
+
+```{r}
+fviz_mca_var(res.mca_posf, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_mca_var(res.mca_posf, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal(),
+              xlim = c(-2,6),
+              ylim= c(-4,2))
+```
+
+As 5 primeiras dimensões juntas explicam 25.7% da variância dos dados.
+E as 2 primeiras 12.5%.
+Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_posf, addlabels = TRUE, ylim = c(0, 10))
+```
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_posf, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_posf, choice = "var", axes = 2, top = 15)
+```
+
+```{r}
+fviz_mca_var(res.mca_posf, alpha.var="contrib",
+             repel = TRUE,
+             ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_contrib(res.mca_pref, choice = "var", axes = 1, top = 15 )
+fviz_contrib(res.mca_posf, choice = "var", axes = 1, top = 15 )
+```
+
+```{r}
+fviz_contrib(res.mca_pref, choice = "var", axes = 2, top = 15 )
+fviz_contrib(res.mca_posf, choice = "var", axes = 2, top = 15 )
+```
