@@ -669,7 +669,7 @@ Revelar as variáveis mais importantes que mais contribuem para explicar as vari
 
 <br />
 
-### **Multiple Correspondence Analysis**
+#### **Pré Pandemia**
 
 ```{r, echo=FALSE, include=FALSE}
 db_bloco_1_pref <- as.data.frame(lapply(db_bloco_1_pre, as.factor))
@@ -734,18 +734,9 @@ fviz_screeplot(res.mca_1, addlabels = TRUE, ylim = c(0, 45))
 ```
 
 ```{r}
-var_pref <- get_mca_var(res.mca_1)
-```
-
-
-```{r}
 fviz_mca_var(res.mca_1, choice = "mca.cor", 
             repel = TRUE, # Avoid text overlapping (slow)
             ggtheme = theme_minimal())
-```
-
-```{r}
-head(round(var_pref$coord, 2), 4)
 ```
 
 Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
@@ -763,7 +754,107 @@ fviz_mca_var(res.mca_1, col.var = "cos2",
 fviz_cos2(res.mca_1, choice = "var", axes = 1:2)
 ```
 
+15 principais categorias de variáveis que contribuem para as dimensões:
+
 ```{r}
-head(round(var_pref$contrib,2), 49)
+par(mfrow=c(2, 1))
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_1, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_1, choice = "var", axes = 2, top = 15)
 ```
 
+#### **Pós Pandemia**
+
+```{r, echo=FALSE, include=FALSE}
+db_bloco_1_posf <- as.data.frame(lapply(db_bloco_1_pos, as.factor))
+```
+
+```{r}
+summary(db_bloco_1_posf)
+```
+
+```{r}
+par(mfrow=c(2, 3))
+plot(db_bloco_1_posf[,1], 
+     main=colnames(db_bloco_1_posf)[1],
+     ylab = "Count",
+     col="steelblue",
+     las = 2)
+plot(db_bloco_1_pref[,2], 
+                  main=colnames(db_bloco_1_posf)[2],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_posf[,3], 
+                  main=colnames(db_bloco_1_posf)[3],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_posf[,4], 
+                  main=colnames(db_bloco_1_posf)[5],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+plot(db_bloco_1_posf[,5], 
+                  main=colnames(db_bloco_1_posf)[5],
+                  ylab = "Count",
+                  col="steelblue",
+                  las = 2)
+  
+```
+
+> Construindo o MCA
+
+As variáveis podem ser representadas calculando as razões de correlação entre as coordenadas dos indivíduos em um componente e cada uma das categorias.
+
+
+```{r}
+res.mca_1 <- MCA(db_bloco_1_posf, ncp = 5, graph = TRUE)
+```
+
+> Visualização e interpretação
+
+Estudar a inércia dos componentes principais permite-nos, por um lado, ver se as variáveis estão estruturadas (presença de correlações entre
+variáveis) e, além disso, determinar o número de componentes a serem interpretados. 
+
+Os resultados em abaixo, produzidos em um gráfico de barras, correspondem ao autovalor (ou seja, a inércia ou a variação explicada) associada a cada um dos componentes; a porcentagem de inércia associada a cada componente e a soma cumulativa dessas porcentagens.
+
+
+> Porcentagens de inércia explicadas por cada dimensão MCA
+
+```{r}
+fviz_screeplot(res.mca_1, addlabels = TRUE, ylim = c(0, 45))
+
+```
+
+```{r}
+fviz_mca_var(res.mca_1, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
+
+Se uma categoria de variável é bem representada por duas dimensões, a soma do cos2 é próxima de um. Para alguns dos itens de linha, são necessárias mais de 2 dimensões para representar perfeitamente os dados.
+
+ > OS COSSENOS SAO MUITO BAIXOS!
+ 
+```{r}
+fviz_mca_var(res.mca_1, col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel = TRUE, # Avoid text overlapping
+             ggtheme = theme_minimal())
+```
+
+```{r}
+fviz_cos2(res.mca_1, choice = "var", axes = 1:2)
+```
+
+15 principais categorias de variáveis que contribuem para as dimensões:
+
+```{r}
+par(mfrow=c(2, 1))
+# Contributions of rows to dimension 1
+fviz_contrib(res.mca_1, choice = "var", axes = 1, top = 15)
+# Contributions of rows to dimension 2
+fviz_contrib(res.mca_1, choice = "var", axes = 2, top = 15)
+```

@@ -309,7 +309,7 @@ fviz_contrib(res.mca_pref_3, choice = "ind", axes = 1:2, top = 20)
 ```
 
 
-## POS-PANDEMIA
+## PóS PANDEMIA
 
 ```{r}
 db_bloco_3_posf <- as.data.frame(lapply(db_bloco_3_pos, as.factor))
