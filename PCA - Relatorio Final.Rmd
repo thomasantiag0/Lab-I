@@ -183,12 +183,19 @@ summary(db_bloco_1_pren)
 ```
 
 ```{r}
-res.pca <- PCA(db_bloco_1_pren)
+res.pca_pre1 <- PCA(db_bloco_1_pren)
 res.pca$eig
+```
+```{r}
+createRmd(res.pca_pre1,file = "PCA-B1-Pre.Rmd", document = "pdf_document")
 ```
 
 ```{r}
 FactoInvestigate::Investigate(res.pca)
+
+cluster <- classif(res.pca_pre1)
+
+cluster$desc.var
 ```
 
 
@@ -203,13 +210,13 @@ summary(db_bloco_1_posn)
 ```
 
 ```{r}
-res.pca <- PCA(db_bloco_1_posn)
-res.pca$eig
+res.pca_1pos <- PCA(db_bloco_1_posn)
+res.pca_1pos$eig
 ```
 
-```{r}
-FactoInvestigate::Investigate(res.pca)
-```
+# ```{r}
+# FactoInvestigate::Investigate(res.pca_1pos)
+# ```
 
 
 ### **Bloco 2**
@@ -222,9 +229,9 @@ res.pca_2_pre <- PCA(db_bloco_2_pre)
 res.pca_2_pre$eig
 ```
 
-```{r}
-FactoInvestigate::Investigate(res.pca_2_pos, )
-```
+# ```{r}
+# FactoInvestigate::Investigate(res.pca_2_pre)
+# ```
 
 #### **Pós Pandemia**
 
@@ -234,6 +241,6 @@ res.pca_2_pos <- PCA(db_bloco_2_pos)
 res.pca_2_pos$eig
 ```
 
-```{r}
-FactoInvestigate::Investigate(res.pca_2_pos)
-```
+# ```{r}
+# FactoInvestigate::Investigate(res.pca_2_pos)
+# ```
