@@ -1,0 +1,10 @@
+---
+title: "Principal Component Analysis"
+author: "Dataset db_bloco_1_pren"
+output:
+  pdf_document: default
+---
+This dataset contains 615 individuals and 5 variables.
+
+- - -
+
