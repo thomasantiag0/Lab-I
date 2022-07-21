@@ -307,12 +307,12 @@ summary(db_bloco_1_posn)
 ```
 
 ```{r}
-res.pca <- PCA(db_bloco_1_posn)
+res.pca_pos_1 <- PCA(db_bloco_1_posn)
 res.pca$eig
 ```
 
 ```{r}
-FactoInvestigate::Investigate(res.pca, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_pos_1, document = "word_document")
 ```
 
 
@@ -327,7 +327,7 @@ res.pca_2_pre$eig
 ```
 
 ```{r}
-FactoInvestigate::Investigate(res.pca_2_pre, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_2_pre, document = "word_document")
 ```
 
 #### **Pós Pandemia**
@@ -339,7 +339,7 @@ res.pca_2_pos$eig
 ```
 
 ```{r}
-FactoInvestigate::Investigate(res.pca_2_pos, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_2_pos, document = "word_document")
 ```
 
 ### **Bloco 3**
@@ -360,7 +360,7 @@ res.pca_3_pre$eig
 ```
 
 ```{r}
-FactoInvestigate::Investigate(res.pca_3_pre, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_3_pre, document = "word_document")
 ```
 
 #### **Pós Pandemia**
@@ -379,5 +379,5 @@ res.pca_3_pre_pos$eig
 ```
 
 ```{r}
-FactoInvestigate::Investigate(res.pca_3_pre_pos, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_3_pre_pos, document = "word_document")
 ```

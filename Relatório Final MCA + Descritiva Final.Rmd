@@ -1,5 +1,7 @@
 ---
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -456,7 +458,7 @@ job_before <- c(
 )
 
 # Plot da tabela de freqûencia mais gráfico de barras
-tab1(job_before, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Emprego antes da pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
+tab1(job_before, decimal = 2, cum.percent = TRUE, graph = F, main = "Emprego antes da pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
 ```
 
 ```{r, fig.cap = "Figura 7 - Emprego na pandemia"}
@@ -475,7 +477,7 @@ job_after <- c(
   rep("11", sum(db$bg_job_since_br___11_y, na.rm = TRUE))
 )
 
-tab1(job_after, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Emprego na pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
+tab1(job_after, decimal = 2, cum.percent = TRUE, graph = F, main = "Emprego na pandemia", xlab = "Tipo de emprego", ylab = "Número de observações")
 ```
 
 
@@ -499,7 +501,7 @@ Quantidade_de_cuidadores <- db %>%
   dplyr::select(bg_caregivers_b4_br) %>%
   drop_na()
 
-tab1(Quantidade_de_cuidadores, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Quantidade de cuidadores por residência", xlab = "Número de cuidadores", ylab = "Número de residências")
+tab1(Quantidade_de_cuidadores, decimal = 2, cum.percent = TRUE, graph = F, main = "Quantidade de cuidadores por residência", xlab = "Número de cuidadores", ylab = "Número de residências")
 ```
 
 ### **Quantidade de crianças**
@@ -522,7 +524,7 @@ Quantidade_de_criancas <- db %>%
   dplyr::select(bg_num_children_br) %>%
   drop_na()
 
-tab1(Quantidade_de_criancas, decimal = 2, sort.group = "decreasing", cum.percent = TRUE, graph = TRUE, main = "Quantidade de crianças por residência", xlab = "Número de crianças", ylab = "Número de residências")
+tab1(Quantidade_de_criancas, decimal = 2, sort.group = "decreasing", cum.percent = TRUE, graph = F, main = "Quantidade de crianças por residência", xlab = "Número de crianças", ylab = "Número de residências")
 ```
 
 
@@ -560,7 +562,7 @@ restrictions <- c(
   rep("Tipo 4", sum(db$bg_restrictions_br___4, na.rm = TRUE))
 )
 
-tab1(restrictions, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Tipo de quarentena", xlab = "Tipo de quarentena", ylab = "Número de observações")
+tab1(restrictions, decimal = 2, cum.percent = TRUE, graph = F, main = "Tipo de quarentena", xlab = "Tipo de quarentena", ylab = "Número de observações")
 ```
 
 
@@ -596,7 +598,7 @@ stress <- c(
   rep("Extremamente", sum(db$bg_home_stress_br___4, na.rm = TRUE))
 )
 
-tab1(stress, decimal = 2, cum.percent = TRUE, graph = TRUE, main = "Nível de estresse com o isolamento", xlab = "Nível", ylab = "Número de observações")
+tab1(stress, decimal = 2, cum.percent = TRUE, graph = F, main = "Nível de estresse com o isolamento", xlab = "Nível", ylab = "Número de observações")
 ```
 
 <br />
@@ -780,7 +782,7 @@ As variáveis podem ser representadas calculando as razões de correlação entr
 
 ```{r}
 # Ajuste do MCA
-res.mca_pref_1 <- MCA(db_bloco_1_pref, ncp = 5, graph = TRUE)
+res.mca_pref_1 <- MCA(db_bloco_1_pref, ncp = 5, graph = F)
 ```
 
 No gráfico biplot abaixo cada alternativa para cada resposta do questionário é plotada em vermelho, enquanto que cada indivíduo (pessoa que respondeu o questionário) é plotado em vermelho. Estas obervações são plotadas em relação as duas dimensões mais explicativas, no caso as dimensões 1 e 2 e indica o quão bem cada dimensão explica aquele observação.
@@ -880,7 +882,7 @@ As variáveis podem ser representadas calculando as razões de correlação entr
 
 
 ```{r}
-res.mca_posf_1 <- MCA(db_bloco_1_posf, ncp = 5, graph = TRUE)
+res.mca_posf_1 <- MCA(db_bloco_1_posf, ncp = 5, graph = F)
 ```
 
 No gráfico biplot abaixo cada alternativa para cada resposta do questionário é plotada em vermelho, enquanto que cada indivíduo (pessoa que respondeu o questionário) é plotado em vermelho. Estas obervações são plotadas em relação as duas dimensões mais explicativas, no caso as dimensões 1 e 2 e indica o quão bem cada dimensão explica aquele observação.
@@ -1110,7 +1112,7 @@ Além disso parece haver um grupo naa1aaa2ão bem explicado em ambas.
 > Construindo MCA
 
 ```{r, include=FALSE}
-res.mca_pref <- MCA(db_bloco_2_pref, ncp = 5, graph = TRUE)
+res.mca_pref <- MCA(db_bloco_2_pref, ncp = 5, graph = F)
 ```
 
 ```{r}
@@ -1195,7 +1197,7 @@ Além disso parece haver um grupo naa1aaa2ão bem explicado em ambas.
 
 
 ```{r, include=FALSE}
-res.mca_posf <- MCA(db_bloco_2_posf, ncp = 5, graph = TRUE)
+res.mca_posf <- MCA(db_bloco_2_posf, ncp = 5, graph = F)
 ```
 
 ```{r}
