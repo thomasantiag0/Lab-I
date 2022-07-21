@@ -292,7 +292,7 @@ res.pca_1_pre$eig
 
 ```{r}
 # Plot do relatório explicativo
-FactoInvestigate::Investigate(res.pca_1_pre, document = "pdf_document")
+FactoInvestigate::Investigate(res.pca_1_pre, document = "word_document")
 ```
 
 
